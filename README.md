@@ -33,7 +33,7 @@ There are also many [community plugins](https://nx.dev/community) you could add.
 
 ## Generate an application
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+Run `nx g @nrwl/react:app my-app` to generate an application..
 
 > You can use any of the plugins above to generate applications as well.
 
