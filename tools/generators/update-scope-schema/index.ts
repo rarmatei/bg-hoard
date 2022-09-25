@@ -1,7 +1,7 @@
 import {Tree, updateJson, formatFiles, ProjectConfiguration, getProjects} from '@nrwl/devkit';
 
 function getScopes(projectMap: Map<string, ProjectConfiguration>) {
-  const projects: any[] = Object.values(projectMap);
+  const projects: any[] = Array.from(projectMap.values());
   const allScopes: string[] = projects
     .map((project) =>
       project.tags.filter((tag: string) => tag.startsWith('scope:'))
