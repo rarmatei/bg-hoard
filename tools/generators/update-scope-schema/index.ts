@@ -11,6 +11,18 @@ function getScopes(projectMap: Map<string, ProjectConfiguration>) {
   return Array.from(new Set(allScopes));
 }
 
+function replaceScopes(content: string, scopes: string[]): string {
+  const joinScopes = scopes.map((s) => `'${s}'`).join(' | ');
+  const PATTERN = /interface Schema \{\n.*\n.*\n\}/gm;
+  return content.replace(
+    PATTERN,
+    `interface Schema {
+      name: string;
+      directory: ${joinScopes};
+    }`
+  );
+}
+
 export default async function (host: Tree) {
   const scopes = getScopes(getProjects(host));
   updateJson(host, 'tools/generators/util-lib/schema.json', (schemaJson) => {
@@ -20,5 +32,8 @@ export default async function (host: Tree) {
     }));
     return schemaJson;
   });
+  const content = host.read('tools/generators/util-lib/index.ts', 'utf-8');
+  const newContent = replaceScopes(content, scopes);
+  host.write('tools/generators/util-lib/index.ts', newContent);
   await formatFiles(host);
 }
