@@ -12,7 +12,18 @@ import { StoreUiSharedModule } from '@bg-hoard/store/ui-shared';
     BrowserModule,
     MatCardModule,
     StoreUiSharedModule,
-    RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
+    RouterModule.forRoot(
+      [
+        {
+          path: 'game/:id',
+          loadChildren: () =>
+            import('@bg-hoard/store/feature-game-detail').then(
+              (m) => m.StoreFeatureGameDetailModule
+            ),
+        },
+      ],
+      { initialNavigation: 'enabledBlocking' }
+    ),
   ],
   providers: [],
   bootstrap: [AppComponent],
