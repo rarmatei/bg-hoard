@@ -1,4 +1,11 @@
-import {Tree, updateJson, formatFiles, ProjectConfiguration, getProjects} from '@nrwl/devkit';
+import {
+  Tree,
+  updateJson,
+  formatFiles,
+  ProjectConfiguration,
+  getProjects,
+  updateProjectConfiguration
+} from '@nrwl/devkit';
 
 function getScopes(projectMap: Map<string, ProjectConfiguration>) {
   const projects: any[] = Array.from(projectMap.values());
@@ -35,5 +42,18 @@ export default async function (host: Tree) {
   const content = host.read('tools/generators/util-lib/index.ts', 'utf-8');
   const newContent = replaceScopes(content, scopes);
   host.write('tools/generators/util-lib/index.ts', newContent);
+  addScopeIfMissing(host);
   await formatFiles(host);
+}
+
+function addScopeIfMissing(host: Tree) {
+  const projectMap = getProjects(host);
+  Array.from(projectMap.keys()).forEach((projectName) => {
+    const project = projectMap.get(projectName);
+    if (!project.tags.some((tag) => tag.startsWith('scope:'))) {
+      const scope = projectName.split('-')[0];
+      project.tags.push(`scope:${scope}`);
+      updateProjectConfiguration(host, projectName, project);
+    }
+  });
 }
